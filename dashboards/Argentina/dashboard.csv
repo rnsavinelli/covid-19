@@ -144,3 +144,5 @@ Date_reported, Country_code, Country, WHO_region, New_cases, Cumulative_cases, N
 2020-07-23,AR,Argentina,AMRO,5344,136118,80,2506
 2020-07-24,AR,Argentina,AMRO,5782,141900,111,2617
 2020-07-25,AR,Argentina,AMRO,6127,148027,105,2722
+2020-07-26,AR,Argentina,AMRO,5493,153520,125,2847
+2020-07-27,AR,Argentina,AMRO,4801,158321,66,2913
