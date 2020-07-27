@@ -34,7 +34,7 @@ if(length(args) == 0) {
     print("Done")
 
     print("Graphing: Cumulative Cases per Census")
-    png(file="Cumulative_cases.png", width=800, height=600)
+    png(file="cumulativecases.png", width=800, height=600)
     plot(data$Cumulative_cases, main="Cumulative Cases per Census", ylab="New Cases" , xlab="Days", type='l', col="blue")
     dev.off()
     print("Done")
