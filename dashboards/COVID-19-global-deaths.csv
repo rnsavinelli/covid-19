@@ -127,6 +127,7 @@ Date_reported, Country_code, Country, WHO_region, New_cases, Cumulative_cases, N
 2020-07-28,PY,Paraguay,AMRO,116,4444,1,41
 2020-07-28,SY,Syrian Arab Republic,EMRO,24,674,2,40
 2020-07-28,YT,Mayotte,AFRO,27,2900,0,38
+2020-07-28,ZW,Zimbabwe,AFRO,192,2704,2,36
 2020-07-28,BJ,Benin,AFRO,0,1770,0,35
 2020-07-28,SZ,Eswatini,AFRO,109,2316,2,34
 2020-07-28,UY,Uruguay,AMRO,18,1192,0,34

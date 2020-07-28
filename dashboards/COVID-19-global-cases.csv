@@ -112,6 +112,7 @@ Date_reported, Country_code, Country, WHO_region, New_cases, Cumulative_cases, N
 2020-07-28,ME,Montenegro,EURO,0,2851,0,43
 2020-07-28,LY,Libya,EMRO,158,2827,4,64
 2020-07-28,LK,Sri Lanka,SEARO,23,2805,0,11
+2020-07-28,ZW,Zimbabwe,AFRO,192,2704,2,36
 2020-07-28,CU,Cuba,AMRO,37,2532,0,87
 2020-07-28,ML,Mali,AFRO,3,2513,1,124
 2020-07-28,GQ,Equatorial Guinea,AFRO,0,2350,0,41
