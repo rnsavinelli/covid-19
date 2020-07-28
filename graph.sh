@@ -17,6 +17,8 @@ listandReturn() {
 }
 
 listandReturn $dir
+[[ "$selection" -lt "1" ]] || [[ "$selection" -gt "$(ls -d "$1"/*/ | wc -l)" ]] && printf "Error: Invalid selection.\\nAborting execution.\\n" && exit 1
+
 printf "Rscript graph.R ./dashboards/%s/dashboard.csv:\\n" $selection
 Rscript graph.R ./dashboards/$selection/dashboard.csv
 printf "Saving files to %s/%s... " $dir $selection

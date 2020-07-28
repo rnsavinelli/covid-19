@@ -6,14 +6,9 @@
 #include <sstream>
 #include <vector>
 
-#define CSV_HEADER "Date_reported, Country_code, Country, WHO_region, New_cases, Cumulative_cases, New_deaths, Cumulative_deaths"
-#define CSV_HEADER_FILTERED "Country, New_cases, Cumulative_cases, New_deaths, Cumulative_deaths"
+#include "coviddata.hpp"
 
 #define DASHBOARDS_PREFIX "./dashboards/"
-
-#define COVID_DATA "database/WHO-COVID-19-global-data.csv"
-#define COVID_DEATHS "dashboards/COVID-19-global-deaths.csv"
-#define COVID_CASES "dashboards/COVID-19-global-cases.csv"
 
 #define UPDATE_DATABASE "./updatedatabase.sh"
 #define GRAPH_DASHBOARD "./graph.sh"
@@ -24,53 +19,6 @@
 #define ERROR -1
 
 using namespace std;
-
-/*struct date {
-    unsigned int year;
-    unsigned int moth;
-    unsigned int day;
-};*/
-
-struct country {
-    string code;
-    string name;
-    string region;
-};
-
-struct datacount {
-    int newdata;
-    long cumulativedata;
-};
-
-struct coviddata {
-    //struct date date;
-    string date;
-    struct country country;
-    struct datacount cases;
-    struct datacount deaths;
-};
-
-enum DATA_HEADERS {
-    DATE_REPORTED,
-    COUNTRY_CODE,
-    COUNTRY_NAME,
-    WHO_REGION,
-    NEW_CASES,
-    CUMULATIVE_CASES,
-    NEW_DEATHS,
-    CUMULATIVE_DEATHS
-};
-
-enum RANKING_CRITERIA {
-    CASES,
-    DEATHS,
-    BOTH
-};
-
-enum FILTERING_CRITERIA {
-    NONE,
-    FILTERED
-};
 
 enum MENU_ITEMS {
     DASHBOARD,
@@ -92,31 +40,13 @@ CSVlineparser(string line)
     return vec;
 }
 
-struct coviddata
-dataformat(vector<string> content)
-{
-    struct coviddata newdata;
-
-    newdata.date = content[DATE_REPORTED];
-
-    newdata.country.code = content[COUNTRY_CODE];
-    newdata.country.name = content[COUNTRY_NAME];
-    newdata.country.region = content[WHO_REGION];
-
-    newdata.cases.newdata = atoi(content[NEW_CASES].c_str());
-    newdata.cases.cumulativedata = atoi(content[CUMULATIVE_CASES].c_str());
-
-    newdata.deaths.newdata = atoi(content[NEW_DEATHS].c_str());
-    newdata.deaths.cumulativedata = atoi(content[CUMULATIVE_DEATHS].c_str());
-
-    return newdata;
-}
-
-
-void
-savedata(vector<struct coviddata> &dest, struct coviddata src)
-{
-    dest.push_back(src);
+string ReplaceAll(string str, const string& from, const string& to) {
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length();
+    }
+    return str;
 }
 
 int
@@ -139,14 +69,14 @@ retrievecountrylist(string file_name, vector<struct coviddata> &data)
 
     getline(file, line, '\n');
     vector<string> rawdata = CSVlineparser(line);
-    struct coviddata prevdata = dataformat(rawdata);
+    struct coviddata prevdata = coviddataformat(rawdata);
 
     while (getline(file, line, '\n')) {
         rawdata = CSVlineparser(line);
-        struct coviddata newdata = dataformat(rawdata);
+        struct coviddata newdata = coviddataformat(rawdata);
 
         if(newdata.country.name != prevdata.country.name) {
-            savedata(data, prevdata);
+            data.push_back(prevdata);
         }
 
         prevdata = newdata;
@@ -178,15 +108,15 @@ retrievecountry(string file_name, vector<struct coviddata> &data, string country
 
   getline(file, line, '\n');
   vector<string> rawdata = CSVlineparser(line);
-  struct coviddata prevdata = dataformat(rawdata);
+  struct coviddata prevdata = coviddataformat(rawdata);
 
   while (getline(file, line, '\n')) {
     rawdata = CSVlineparser(line);
-    struct coviddata newdata = dataformat(rawdata);
+    struct coviddata newdata = coviddataformat(rawdata);
 
     if((newdata.country.name == prevdata.country.name && newdata.country.name == country)
             || prevdata.country.name == country) {
-      savedata(data, prevdata);
+            data.push_back(prevdata);
     }
 
     prevdata = newdata;
@@ -234,9 +164,8 @@ datarank(vector<struct coviddata> data, unsigned int criteria)
     return data;
 }
 
-
 int
-datastore(const vector<struct coviddata> data, string dest, unsigned int format)
+datastore(const vector<struct coviddata> data, string dest, unsigned int header_format)
 {
     cout << "Saving file to " << dest << "... ";
     ofstream file;
@@ -246,7 +175,7 @@ datastore(const vector<struct coviddata> data, string dest, unsigned int format)
         return ERROR;
     }
 
-    switch(format) {
+    switch(header_format) {
         default:
         case NONE:
             file << CSV_HEADER << endl;
@@ -274,15 +203,6 @@ datastore(const vector<struct coviddata> data, string dest, unsigned int format)
     cout << "saved." << endl;
 
     return 0;
-}
-
-string ReplaceAll(string str, const string& from, const string& to) {
-    size_t start_pos = 0;
-    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
-        str.replace(start_pos, from.length(), to);
-        start_pos += to.length();
-    }
-    return str;
 }
 
 int
@@ -314,37 +234,41 @@ main(void)
     cout << endl << "Option: ";
     cin >> menu;
 
-    int criteria = BOTH;
-    int format = NONE;
+    int ranking_criteria = BOTH;
+    int header_format = NONE;
 
     switch(menu) {
+        default:
+            cout << "Error: " << menu << " is not a valid option" << endl;
+            break;
+
         case DASHBOARD:
             cout << endl << ":: Dashboards criteria:" << endl
                 << "   (" << CASES << ") CASES" << endl
                 << "   (" << DEATHS << ") DEATHS" << endl
                 << "   (" << BOTH << ") BOTH" << endl;
             cout << endl << "Criteria (default = " << BOTH << "): ";
-            cin >> criteria;
+            cin >> ranking_criteria;
 
             cout << endl << ":: Formatting available:" << endl
                 << "   (" << NONE << ") " << CSV_HEADER << endl
                 << "   (" << FILTERED << ") " << CSV_HEADER_FILTERED << endl;
             cout << endl << "Format (default = " << NONE << "): ";
-            cin >> format;
+            cin >> header_format;
             cout << endl;
 
             retrievecountrylist(COVID_DATA, data);
-            switch(criteria) {
+            switch(ranking_criteria) {
                 default:
                 case DEATHS:
                     ranked = datarank(data, DEATHS);
-                    datastore(ranked, COVID_DEATHS, format);
-                    if(criteria == DEATHS)
+                    datastore(ranked, COVID_DEATHS, header_format);
+                    if(ranking_criteria == DEATHS)
                         break;
 
                 case CASES:
                     ranked = datarank(data, CASES);
-                    datastore(ranked, COVID_CASES, format);
+                    datastore(ranked, COVID_CASES, header_format);
                     break;
             }
             break;
@@ -356,7 +280,8 @@ main(void)
 #endif
 
         case COUNTRYINFO:
-            string country = "";
+            string country;
+            country.clear();
 
             cout << endl << "From which country do you want to retrieve information?";
             cout << endl << "Answer: ";
