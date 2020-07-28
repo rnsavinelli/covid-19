@@ -104,6 +104,10 @@ retrievecountrylist(string file_name, vector<struct coviddata> &data)
 
         prevdata = newdata;
     }
+
+    /* Ensures last item on the list gets included */
+    data.push_back(prevdata);
+
     cout << "done." << endl;
 
     file.close();
@@ -147,9 +151,6 @@ retrievecountry(string file_name, vector<struct coviddata> &data, string country
 
     if(data.size() == 0)
         return -1;
-
-    /* Ensures last item on the list gets included */
-    data.push_back(prevdata);
 
     file.close();
     cout << "done." << endl;
