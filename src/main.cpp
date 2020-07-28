@@ -1,3 +1,25 @@
+/*
+ * main.cpp
+ *
+ * Copyright 2020 Roberto Nicolás Savinelli <rnsavinelli@est.frba.utn.edu.ar>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ *
+ */
+
 #include <iostream>
 #include <limits>
 #include <cstring>
@@ -40,7 +62,8 @@ CSVlineparser(string line)
     return vec;
 }
 
-string ReplaceAll(string str, const string& from, const string& to) {
+string
+ReplaceAll(string str, const string& from, const string& to) {
     size_t start_pos = 0;
     while((start_pos = str.find(from, start_pos)) != std::string::npos) {
         str.replace(start_pos, from.length(), to);
@@ -91,44 +114,48 @@ retrievecountrylist(string file_name, vector<struct coviddata> &data)
 int
 retrievecountry(string file_name, vector<struct coviddata> &data, string country)
 {
-  ifstream file;
-  string line;
+    ifstream file;
+    string line;
 
-  file.open(file_name);
+    file.open(file_name);
 
-  cout << "Opening \"" << file_name << "\"" << "... ";
-  if(!file.is_open()) {
-    perror("file.open()");
-    return ERROR;
-  }
-  cout << "done." << endl;
+    cout << "Opening \"" << file_name << "\"" << "... ";
+    if(!file.is_open()) {
+        perror("file.open()");
+        return ERROR;
+    }
+    cout << "done." << endl;
 
-  cout << "Extracting data... ";
-  getline(file, line, '\n'); /* ignore header */
+    cout << "Extracting data... ";
+    getline(file, line, '\n'); /* ignore header */
 
-  getline(file, line, '\n');
-  vector<string> rawdata = CSVlineparser(line);
-  struct coviddata prevdata = coviddataformat(rawdata);
+    getline(file, line, '\n');
+    vector<string> rawdata = CSVlineparser(line);
+    struct coviddata prevdata = coviddataformat(rawdata);
 
-  while (getline(file, line, '\n')) {
-    rawdata = CSVlineparser(line);
-    struct coviddata newdata = coviddataformat(rawdata);
+    while (getline(file, line, '\n')) {
+        rawdata = CSVlineparser(line);
+        struct coviddata newdata = coviddataformat(rawdata);
 
-    if((newdata.country.name == prevdata.country.name && newdata.country.name == country)
+        if((newdata.country.name == prevdata.country.name && newdata.country.name == country)
             || prevdata.country.name == country) {
             data.push_back(prevdata);
+        }
+
+        prevdata = newdata;
     }
 
-    prevdata = newdata;
-  }
+    /* Ensures last item on the list gets included */
+    data.push_back(prevdata);
 
-  file.close();
-  cout << "done." << endl;
 
-  if(data.size() == 0)
-      return -1;
+    file.close();
+    cout << "done." << endl;
 
-  return 0;
+    if(data.size() == 0)
+        return -1;
+
+    return 0;
 }
 
 vector<struct coviddata>
@@ -227,10 +254,13 @@ main(void)
     cout << endl << ":: Menu:" << endl
         << "   (" << DASHBOARD << ") Create global dashboard" << endl
         << "   (" << COUNTRYINFO << ") Retrieve country information" << endl
+
 #if R_INSTALLED_
         << "   (" << COUNTRYGRAPH << ") Graph country information"
 #endif
+
         << endl;
+
     cout << endl << "Option: ";
     cin >> menu;
 
@@ -247,12 +277,14 @@ main(void)
                 << "   (" << CASES << ") CASES" << endl
                 << "   (" << DEATHS << ") DEATHS" << endl
                 << "   (" << BOTH << ") BOTH" << endl;
+
             cout << endl << "Criteria (default = " << BOTH << "): ";
             cin >> ranking_criteria;
 
             cout << endl << ":: Formatting available:" << endl
                 << "   (" << NONE << ") " << CSV_HEADER << endl
                 << "   (" << FILTERED << ") " << CSV_HEADER_FILTERED << endl;
+
             cout << endl << "Format (default = " << NONE << "): ";
             cin >> header_format;
             cout << endl;
