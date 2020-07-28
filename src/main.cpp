@@ -145,15 +145,14 @@ retrievecountry(string file_name, vector<struct coviddata> &data, string country
         prevdata = newdata;
     }
 
+    if(data.size() == 0)
+        return -1;
+
     /* Ensures last item on the list gets included */
     data.push_back(prevdata);
 
-
     file.close();
     cout << "done." << endl;
-
-    if(data.size() == 0)
-        return -1;
 
     return 0;
 }
