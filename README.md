@@ -11,7 +11,7 @@ The goal of this project is to build an understanding of the virus behaviour and
 - https://www.who.int/emergencies/diseases/novel-coronavirus-2019
 -https://coronavirus.jhu.edu/map.html
 
-## Useful information
+## About the scripts
 
 [`graph.sh`](graph.sh) and [`updatedatabase.sh`](updatedatabase.sh) are invoked within covid-tool, but were created such that the user can run them as separate tools.
 
