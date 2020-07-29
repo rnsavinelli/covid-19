@@ -218,9 +218,9 @@ datastore(const vector<struct coviddata> data, string dest, unsigned int header_
         case FILTERED:
              file << CSV_HEADER_FILTERED << endl;
             for(struct coviddata element : data) {
-                file << element.country.name << ","
-                    << element.cases.newdata << "," << element.cases.cumulativedata
-                    << element.deaths.newdata << "," << element.deaths.cumulativedata
+                file << element.country.name << "," << element.cases.newdata << ","
+                    << element.cases.cumulativedata << "," << element.deaths.newdata << ","
+                    << element.deaths.cumulativedata
                     << endl;
             }
             break;
