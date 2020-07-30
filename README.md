@@ -9,7 +9,7 @@ The goal of this project is to build an understanding of the virus behaviour and
 ## Get the latest information on SARS-CoV-2
 - https://www.cdc.gov/coronavirus/2019-ncov/
 - https://www.who.int/emergencies/diseases/novel-coronavirus-2019
--https://coronavirus.jhu.edu/map.html
+- https://coronavirus.jhu.edu/map.html
 
 ## About the scripts
 
