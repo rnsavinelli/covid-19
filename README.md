@@ -6,6 +6,8 @@ Using the [World Health Organization](https://en.wikipedia.org/wiki/World_Health
 
 The goal of this project is to build an understanding of the virus behaviour and evolution by graphing data.
 
+**Important:** To graph data, the [R](https://cran.r-project.org/) software environment for statistical computing and graphics must be present on your system.
+
 ## Get the latest information on SARS-CoV-2
 - https://www.cdc.gov/coronavirus/2019-ncov/
 - https://www.who.int/emergencies/diseases/novel-coronavirus-2019
