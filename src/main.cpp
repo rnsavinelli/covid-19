@@ -57,7 +57,8 @@ enum MENU_ITEMS {
     UPDATEDB,
     DASHBOARD,
     COUNTRYINFO,
-    COUNTRYGRAPH
+    COUNTRYGRAPH,
+    MENU_ITEMS_N
 };
 
 using namespace std;
@@ -257,9 +258,9 @@ main(void)
 {
     vector<struct coviddata> data, tempdata;
     vector<struct coviddata> ranked;
-    int menu;
+    int menu = MENU_ITEMS_N;
 
-    cout << "covid-tool v1.1 Global COVID-19 Dashboard and Graph Generator." << endl
+    cout << "covid-tool v1.1.2 Global COVID-19 Dashboard and Graph Generator." << endl
          << "Copyright (c) 2020 R Nicolás Savinelli <rsavinelli@est.frba.utn.edu.ar>"
          << endl;
 
@@ -273,128 +274,113 @@ main(void)
     }
 #endif
 
-MENU:
-    cout << endl << ":: Menu:" << endl
-        << "   (" << UPDATEDB << ") Retrieve the latest global database" << endl
-        << "   (" << DASHBOARD << ") Create global dashboard" << endl
-        << "   (" << COUNTRYINFO << ") Retrieve country information" << endl
+    while(menu != EXIT) {
+        cout << endl << ":: Menu:" << endl
+             << "   (" << UPDATEDB << ") Retrieve the latest global database" << endl
+             << "   (" << DASHBOARD << ") Create global dashboard" << endl
+             << "   (" << COUNTRYINFO << ") Retrieve country information" << endl
 #if R_INSTALLED_
-        << "   (" << COUNTRYGRAPH << ") Graph country information" << endl
+             << "   (" << COUNTRYGRAPH << ") Graph country information" << endl
 #endif
-        << "   (" << EXIT << ") Exit" << endl;
+             << "   (" << EXIT << ") Exit" << endl;
 
-    cout << endl << "Option: ";
-    cin >> menu;
+        cout << endl << "Option: ";
+        cin >> menu;
 
-    switch(menu) {
-        default:
-        {
-            cout << "Error: " << menu << " is not a valid option." << endl;
-            break;
-        }
+        switch(menu) {
+            default:
+                cout << "Error: " << menu << " is not a valid option." << endl;
+                break;
 
-        case EXIT:
-        {
-            break;
-        }
+            case EXIT:
+                break;
 
-        case UPDATEDB:
-        {
-            system(UPDATE_DATABASE);
-            cout << "Database is up-to-date." << endl;
-            break;
-        }
+            case UPDATEDB:
+                system(UPDATE_DATABASE);
+                cout << "Database is up-to-date." << endl;
+                break;
 
-        case DASHBOARD:
-        {
-            int ranking_criteria = BOTH;
-            int header_format = NONE;
+            case DASHBOARD: {
+                int rankingcriteria, headerformat;
+                string outputfile;
 
-            string outputfile, cmd;
+                cout << endl << "> Dashboards criteria:" << endl
+                     << "   (" << CASES << ") CASES" << endl
+                     << "   (" << DEATHS << ") DEATHS" << endl
+                     << "   (" << BOTH << ") BOTH" << endl;
 
-            cout << endl << "> Dashboards criteria:" << endl
-                << "   (" << CASES << ") CASES" << endl
-                << "   (" << DEATHS << ") DEATHS" << endl
-                << "   (" << BOTH << ") BOTH" << endl;
+                cout << endl << "Criteria (default = " << BOTH << "): ";
+                cin >> rankingcriteria;
 
-            cout << endl << "Criteria (default = " << BOTH << "): ";
-            cin >> ranking_criteria;
+                cout << endl << "> Formatting available:" << endl
+                     << "   (" << NONE << ") " << CSV_HEADER << endl
+                     << "   (" << FILTERED << ") " << CSV_HEADER_FILTERED << endl;
 
-            cout << endl << "> Formatting available:" << endl
-                << "   (" << NONE << ") " << CSV_HEADER << endl
-                << "   (" << FILTERED << ") " << CSV_HEADER_FILTERED << endl;
+                cout << endl << "Format (default = " << NONE << "): ";
+                cin >> headerformat;
+                cout << endl;
 
-            cout << endl << "Format (default = " << NONE << "): ";
-            cin >> header_format;
-            cout << endl;
+                tempdata = retrieveCountryList(COVID_DATA, data);
+                switch(rankingcriteria) {
+                    default:
+                    case DEATHS:
+                        ranked = dataRank(tempdata, DEATHS);
+                        outputfile = DASHBOARDS_LOCATION_PREFIX;
+                        outputfile += COVID_DEATHS;
+                        dataStore(ranked, outputfile, headerformat);
+                        if(rankingcriteria == DEATHS)
+                           break;
 
-            tempdata = retrieveCountryList(COVID_DATA, data);
-            switch(ranking_criteria) {
-                default:
-                case DEATHS:
-                    ranked = dataRank(tempdata, DEATHS);
-                    outputfile = DASHBOARDS_LOCATION_PREFIX;
-                    outputfile += COVID_DEATHS;
-                    dataStore(ranked, outputfile, header_format);
-                    if(ranking_criteria == DEATHS)
+                    case CASES:
+                        ranked = dataRank(tempdata, CASES);
+                        outputfile = DASHBOARDS_LOCATION_PREFIX;
+                        outputfile += COVID_CASES;
+                        dataStore(ranked, outputfile, headerformat);
                         break;
-
-                case CASES:
-                    ranked = dataRank(tempdata, CASES);
-                    outputfile = DASHBOARDS_LOCATION_PREFIX;
-                    outputfile += COVID_CASES;
-                    dataStore(ranked, outputfile, header_format);
-                    break;
-            }
-
-            break;
-        }
-
-#if R_INSTALLED_
-        case COUNTRYGRAPH:
-        {
-            string cmd = GRAPH_DASHBOARD;
-            cmd += " ";
-            cmd += ROUT_DIR;
-            cmd += " ";
-            cmd += + COUNTRY_DATA;
-            system(cmd.c_str());
-            break;
-        }
-#endif
-
-        case COUNTRYINFO:
-        {
-            string outputfile, cmd;
-            string country;
-
-            cout << endl << "From which country do you want to retrieve information?";
-            cout << endl << "Answer: ";
-            //cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n' );
-            cin.ignore();
-            getline(cin, country);
-
-            if(retrieveCountry(COVID_DATA, data, country, tempdata) == -1) {
-                cout << "Error: country not found." << endl
-                     << "Warning: Country search is case sensitive." << endl;
+                }
                 break;
             }
 
-            country = replaceAll(country, " ", "_");
+#if R_INSTALLED_
+            case COUNTRYGRAPH: {
+                string cmd;
+                cmd = GRAPH_DASHBOARD;
+                cmd += " ";
+                cmd += ROUT_DIR;
+                cmd += " ";
+                cmd += + COUNTRY_DATA;
+                system(cmd.c_str());
+                break;
+            }
+#endif
 
-            cmd = CREATE_DIR;
-            cmd += " ";
-            cmd += DASHBOARDS_LOCATION_PREFIX + country + "/";
-            system(cmd.c_str());
+            case COUNTRYINFO: {
+                string outputfile, cmd;
+                string country;
 
-            outputfile = DASHBOARDS_LOCATION_PREFIX + country + "/" + COUNTRY_DATA;
-            dataStore(tempdata, outputfile, NONE);
-            break;
+                cout << endl << "From which country do you want to retrieve information?";
+                cout << endl << "Answer: ";
+                cin.ignore();
+                getline(cin, country);
+
+                if(retrieveCountry(COVID_DATA, data, country, tempdata) == -1) {
+                    cout << "Error: country not found." << endl
+                         << "Warning: Country search is case sensitive." << endl;
+                    break;
+                }
+
+                country = replaceAll(country, " ", "_");
+
+                cmd = CREATE_DIR;
+                cmd += " ";
+                cmd += DASHBOARDS_LOCATION_PREFIX + country + "/";
+                system(cmd.c_str());
+
+                outputfile = DASHBOARDS_LOCATION_PREFIX + country + "/" + COUNTRY_DATA;
+                dataStore(tempdata, outputfile, NONE);
+                break;
+            }
         }
-    }
-
-    if(menu != EXIT) {
-        goto MENU;
     }
 
     return 0;
