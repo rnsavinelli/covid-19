@@ -47,7 +47,7 @@
     #define ROUT_DIR "rout"
 #endif
 
-/* IF DEFINED, COVID-TOOL WILL ALWAYS PROMPT THE USER TO UPDATE DATABASE */
+/* IF DEFINED, COVID-TOOL WILL ALWAYS PROMPT THE USER TO UPDATE THE DATABASE */
 //#define ALWAYS_PROMPT_TO_UPDATE_THE_DATABASE_ 1
 
 #define ERROR -1
@@ -261,7 +261,7 @@ main(void)
     int menu = MENU_ITEMS_N;
 
     cout << "covid-tool v1.1.2 Global COVID-19 Dashboard and Graph Generator." << endl
-         << "Copyright (c) 2020 R Nicolás Savinelli <rsavinelli@est.frba.utn.edu.ar>"
+         << "Copyright (c) 2020 R. Nicolás Savinelli <rsavinelli@est.frba.utn.edu.ar>"
          << endl;
 
 #if ALWAYS_PROMPT_TO_UPDATE_THE_DATABASE_
