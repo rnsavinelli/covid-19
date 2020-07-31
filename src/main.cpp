@@ -21,8 +21,6 @@
  */
 
 #include <iostream>
-#include <limits>
-#include <cstring>
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -50,7 +48,7 @@
 #endif
 
 /* IF DEFINED, COVID-TOOL WILL ALWAYS PROMPT THE USER TO UPDATE DATABASE */
-#define ALWAYS_PROMPT_TO_UPDATE_THE_DATABASE_ 1
+//#define ALWAYS_PROMPT_TO_UPDATE_THE_DATABASE_ 1
 
 #define ERROR -1
 
