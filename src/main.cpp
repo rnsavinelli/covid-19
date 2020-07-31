@@ -30,17 +30,26 @@
 
 #include "coviddata.hpp"
 
-#define DASHBOARDS_PREFIX "./dashboards/"
+#define DASHBOARDS_LOCATION_PREFIX "./dashboards/"
 
+/* OUTPUT FILENAMES */
+#define COVID_DEATHS "COVID-19-global-deaths.csv"
+#define COVID_CASES "COVID-19-global-cases.csv"
+#define COUNTRY_DATA "COVID-19-data.csv"
+
+/* BASH SCRIPTS */
 #define UPDATE_DATABASE "./updatedatabase.sh"
 #define GRAPH_DASHBOARD "./graph.sh"
 #define CREATE_DIR "mkdir -p "
 
+/* R CONFIGURATION */
 #define R_INSTALLED_ 1
 
-#define ERROR -1
+#if R_INSTALLED_
+    #define ROUT_DIR "rout"
+#endif
 
-using namespace std;
+#define ERROR -1
 
 enum MENU_ITEMS {
     DASHBOARD,
@@ -48,6 +57,9 @@ enum MENU_ITEMS {
     COUNTRYGRAPH
 };
 
+using namespace std;
+
+/* DATA MANIPULATION TOOLS ************************************************* */
 vector<string>
 CSVlineparser(string line)
 {
@@ -63,7 +75,8 @@ CSVlineparser(string line)
 }
 
 string
-ReplaceAll(string str, const string& from, const string& to) {
+ReplaceAll(string str, const string& from, const string& to)
+{
     size_t start_pos = 0;
     while((start_pos = str.find(from, start_pos)) != std::string::npos) {
         str.replace(start_pos, from.length(), to);
@@ -71,6 +84,7 @@ ReplaceAll(string str, const string& from, const string& to) {
     }
     return str;
 }
+/* ************************************************************************ */
 
 int
 retrievecountrylist(string file_name, vector<struct coviddata> &data)
@@ -240,7 +254,7 @@ main(void)
     char answer;
     int menu;
 
-    cout << "covid-tool v1.0 Global COVID-19 Dashboard and Graph Generator." << endl
+    cout << "covid-tool v1.0.2 Global COVID-19 Dashboard and Graph Generator." << endl
          << "Copyright (c) 2020 R Nicolás Savinelli <rsavinelli@est.frba.utn.edu.ar>"
          << endl << endl;
 
@@ -266,6 +280,8 @@ main(void)
 
     int ranking_criteria = BOTH;
     int header_format = NONE;
+    string outputfile;
+    string cmd;
 
     switch(menu) {
         default:
@@ -293,21 +309,30 @@ main(void)
             switch(ranking_criteria) {
                 default:
                 case DEATHS:
+                    outputfile = DASHBOARDS_LOCATION_PREFIX;
+                    outputfile += COVID_DEATHS;
                     ranked = datarank(data, DEATHS);
-                    datastore(ranked, COVID_DEATHS, header_format);
+                    datastore(ranked, outputfile, header_format);
                     if(ranking_criteria == DEATHS)
                         break;
 
                 case CASES:
+                    outputfile = DASHBOARDS_LOCATION_PREFIX;
+                    outputfile += COVID_CASES;
                     ranked = datarank(data, CASES);
-                    datastore(ranked, COVID_CASES, header_format);
+                    datastore(ranked, outputfile, header_format);
                     break;
             }
             break;
 
 #if R_INSTALLED_
         case COUNTRYGRAPH:
-            system(GRAPH_DASHBOARD);
+            cmd = GRAPH_DASHBOARD;
+            cmd += " ";
+            cmd += ROUT_DIR;
+            cmd += " ";
+            cmd += + COUNTRY_DATA;
+            system(cmd.c_str());
             break;
 #endif
 
@@ -328,13 +353,13 @@ main(void)
 
             country = ReplaceAll(country, " ", "_");
 
-            string cmd = CREATE_DIR;
+            cmd = CREATE_DIR;
             cmd += " ";
-            cmd += DASHBOARDS_PREFIX + country + "/";
+            cmd += DASHBOARDS_LOCATION_PREFIX + country + "/";
             system(cmd.c_str());
 
-            string file = "dashboards/" + country + "/" + "dashboard.csv";
-            datastore(data, file, NONE);
+            outputfile = DASHBOARDS_LOCATION_PREFIX + country + "/" + COUNTRY_DATA;
+            datastore(data, outputfile, NONE);
             break;
     }
 

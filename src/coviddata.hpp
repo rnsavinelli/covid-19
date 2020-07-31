@@ -21,8 +21,8 @@
  */
 
 #ifndef COVIDDATA_H_
+#define COVIDDATA_H_
 
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -30,8 +30,6 @@
 #define CSV_HEADER_FILTERED "Country, New_cases, Cumulative_cases, New_deaths, Cumulative_deaths"
 
 #define COVID_DATA "database/WHO-COVID-19-global-data.csv"
-#define COVID_DEATHS "dashboards/COVID-19-global-deaths.csv"
-#define COVID_CASES "dashboards/COVID-19-global-cases.csv"
 
 using namespace std;
 

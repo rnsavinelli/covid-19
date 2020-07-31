@@ -1,10 +1,18 @@
 #!/bin/bash
+# USAGE: ./graph.sh ROUT_DIR CSV_INPUT_FILENAME
 
-dir="./dashboards"
-out="Rout"
+if [ $# -lt 2 ]; then
+    echo "USAGE: ./graph.sh ROUT_DIR CSV_INPUT_FILENAME"
+    exit 1
+fi
+
+datadir="./dashboards"
 selection=""
 
-mkdir -p $out
+outdir=$1
+inputfile=$2
+
+mkdir -p $outdir
 
 listandReturn() {
     printf "Listing contents of %s\\n" "$1"
@@ -17,9 +25,11 @@ listandReturn() {
     selection="$(ls -drc "$1"/*/ | awk -F '/' '{print $3}' | nl | grep -w "$number" | awk '{print $2}')"
 }
 
-listandReturn $dir
-printf "Rscript graph.R ./dashboards/%s/dashboard.csv:\\n" $selection
-Rscript graph.R ./dashboards/$selection/dashboard.csv
-printf "Saving files to %s/%s... " $dir $selection
-mv Rout/* $dir/$selection/
+listandReturn $datadir
+printf "Rscript graph.R %s/%s/%s:\\n" $datadir $selection $inputfile
+
+Rscript graph.R $datadir/$selection/$inputfile $outdir
+
+printf "Saving files to %s/%s... " $datadir $selection
+mv $outdir/* $datadir/$selection/
 printf "done.\\n"

@@ -1,6 +1,6 @@
 # USAGE: graph.R CSV_DASHBOARD
 args = (commandArgs(TRUE))
-out = "Rout"
+out = args[2]
 
 if(length(args) == 0) {
     print("USAGE: graph.R CSV_DASHBOARD")
