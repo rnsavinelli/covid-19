@@ -17,25 +17,25 @@ if(length(args) == 0) {
 
     print("Graphing: Deaths per Census")
     png(file="deaths.png", width=800, height=600)
-    plot(data$New_deaths, main="Deaths per Census", ylab="New Deaths" , xlab="Days", type='l', col="red")
+    plot(data$New_deaths, main="Deaths per Census", ylab="New Deaths" , xlab="Census (days)", type='l', col="red")
     dev.off()
     print("done")
 
     print("Graphing: Cumulative Deaths per Census")
     png(file="cumulativedeaths.png", width=800, height=600)
-    plot(data$Cumulative_deaths, main="Cumulative Deaths per Census", ylab="New Deaths" , xlab="Days", type='l', col="red")
+    plot(data$Cumulative_deaths, main="Cumulative Deaths per Census", ylab="New Deaths" , xlab="Census (days)", type='l', col="red")
     dev.off()
     print("Done")
 
     print("Graphing: Cases per Census")
     png(file="cases.png", width=800, height=600)
-    plot(data$New_cases, main="Cases per Census", ylab="New Cases" , xlab="Days", type='l', col="blue")
+    plot(data$New_cases, main="Cases per Census", ylab="New Cases" , xlab="Census (days)", type='l', col="blue")
     dev.off()
     print("Done")
 
     print("Graphing: Cumulative Cases per Census")
     png(file="cumulativecases.png", width=800, height=600)
-    plot(data$Cumulative_cases, main="Cumulative Cases per Census", ylab="New Cases" , xlab="Days", type='l', col="blue")
+    plot(data$Cumulative_cases, main="Cumulative Cases per Census", ylab="New Cases" , xlab="Census (days)", type='l', col="blue")
     dev.off()
     print("Done")
 }

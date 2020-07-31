@@ -26,7 +26,7 @@
 #include "coviddata.hpp"
 
 struct coviddata
-coviddataformat(vector<string> content)
+covidDataFormat(vector<string> content)
 {
     struct coviddata newdata;
 

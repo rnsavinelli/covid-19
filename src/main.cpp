@@ -49,9 +49,14 @@
     #define ROUT_DIR "rout"
 #endif
 
+/* IF DEFINED, COVID-TOOL WILL ALWAYS PROMPT THE USER TO UPDATE DATABASE */
+#define ALWAYS_PROMPT_TO_UPDATE_THE_DATABASE_ 1
+
 #define ERROR -1
 
 enum MENU_ITEMS {
+    EXIT,
+    UPDATEDB,
     DASHBOARD,
     COUNTRYINFO,
     COUNTRYGRAPH
@@ -75,7 +80,7 @@ CSVlineparser(string line)
 }
 
 string
-ReplaceAll(string str, const string& from, const string& to)
+replaceAll(string str, const string& from, const string& to)
 {
     size_t start_pos = 0;
     while((start_pos = str.find(from, start_pos)) != std::string::npos) {
@@ -86,8 +91,8 @@ ReplaceAll(string str, const string& from, const string& to)
 }
 /* ************************************************************************ */
 
-int
-retrievecountrylist(string file_name, vector<struct coviddata> &data)
+vector<struct coviddata>
+retrieveCountryList(string file_name, vector<struct coviddata> data)
 {
     ifstream file;
     string line;
@@ -97,7 +102,8 @@ retrievecountrylist(string file_name, vector<struct coviddata> &data)
     cout << "Opening \"" << file_name << "\"" << "... ";
     if(!file.is_open()) {
         perror("file.open()");
-        return ERROR;
+        data.clear();
+        return data;
     }
     cout << "done." << endl;
 
@@ -106,11 +112,11 @@ retrievecountrylist(string file_name, vector<struct coviddata> &data)
 
     getline(file, line, '\n');
     vector<string> rawdata = CSVlineparser(line);
-    struct coviddata prevdata = coviddataformat(rawdata);
+    struct coviddata prevdata = covidDataFormat(rawdata);
 
     while (getline(file, line, '\n')) {
         rawdata = CSVlineparser(line);
-        struct coviddata newdata = coviddataformat(rawdata);
+        struct coviddata newdata = covidDataFormat(rawdata);
 
         if(newdata.country.name != prevdata.country.name) {
             data.push_back(prevdata);
@@ -126,11 +132,11 @@ retrievecountrylist(string file_name, vector<struct coviddata> &data)
 
     file.close();
 
-    return 0;
+    return data;
 }
 
 int
-retrievecountry(string file_name, vector<struct coviddata> &data, string country)
+retrieveCountry(string file_name, vector<struct coviddata> data, string country, vector<struct coviddata> &countrydata)
 {
     ifstream file;
     string line;
@@ -149,11 +155,11 @@ retrievecountry(string file_name, vector<struct coviddata> &data, string country
 
     getline(file, line, '\n');
     vector<string> rawdata = CSVlineparser(line);
-    struct coviddata prevdata = coviddataformat(rawdata);
+    struct coviddata prevdata = covidDataFormat(rawdata);
 
     while (getline(file, line, '\n')) {
         rawdata = CSVlineparser(line);
-        struct coviddata newdata = coviddataformat(rawdata);
+        struct coviddata newdata = covidDataFormat(rawdata);
 
         if((newdata.country.name == prevdata.country.name && newdata.country.name == country)
             || prevdata.country.name == country) {
@@ -163,17 +169,19 @@ retrievecountry(string file_name, vector<struct coviddata> &data, string country
         prevdata = newdata;
     }
 
-    if(data.size() == 0)
-        return -1;
+    if(data.size() == 0) {
+        return ERROR;
+    }
 
     file.close();
     cout << "done." << endl;
+    countrydata = data;
 
     return 0;
 }
 
 vector<struct coviddata>
-datarank(vector<struct coviddata> data, unsigned int criteria)
+dataRank(vector<struct coviddata> data, unsigned int criteria)
 {
     cout << "Ranking data in accordance to criterion (" << criteria << ")... ";
     unsigned int i = 1;
@@ -206,7 +214,7 @@ datarank(vector<struct coviddata> data, unsigned int criteria)
 }
 
 int
-datastore(const vector<struct coviddata> data, string dest, unsigned int header_format)
+dataStore(const vector<struct coviddata> data, string dest, unsigned int header_format)
 {
     cout << "Saving file to " << dest << "... ";
     ofstream file;
@@ -249,47 +257,64 @@ datastore(const vector<struct coviddata> data, string dest, unsigned int header_
 int
 main(void)
 {
-    vector<struct coviddata> data;
+    vector<struct coviddata> data, tempdata;
     vector<struct coviddata> ranked;
-    char answer;
     int menu;
 
-    cout << "covid-tool v1.0.2 Global COVID-19 Dashboard and Graph Generator." << endl
+    cout << "covid-tool v1.1 Global COVID-19 Dashboard and Graph Generator." << endl
          << "Copyright (c) 2020 R Nicolás Savinelli <rsavinelli@est.frba.utn.edu.ar>"
-         << endl << endl;
+         << endl;
 
-    cout << "Do you want to retrieve the latest global database? [Y/n]: ";
+#if ALWAYS_PROMPT_TO_UPDATE_THE_DATABASE_
+    char answer;
+    cout << endl << "Do you want to retrieve the latest global database? [Y/n]: ";
     cin  >> answer;
     if (answer == 'y' || answer == 'Y') {
         system(UPDATE_DATABASE);
         cout << "Database is up-to-date." << endl;
     }
-
-    cout << endl << ":: Menu:" << endl
-        << "   (" << DASHBOARD << ") Create global dashboard" << endl
-        << "   (" << COUNTRYINFO << ") Retrieve country information" << endl
-
-#if R_INSTALLED_
-        << "   (" << COUNTRYGRAPH << ") Graph country information"
 #endif
 
-        << endl;
+MENU:
+    cout << endl << ":: Menu:" << endl
+        << "   (" << UPDATEDB << ") Retrieve the latest global database" << endl
+        << "   (" << DASHBOARD << ") Create global dashboard" << endl
+        << "   (" << COUNTRYINFO << ") Retrieve country information" << endl
+#if R_INSTALLED_
+        << "   (" << COUNTRYGRAPH << ") Graph country information" << endl
+#endif
+        << "   (" << EXIT << ") Exit" << endl;
 
     cout << endl << "Option: ";
     cin >> menu;
 
-    int ranking_criteria = BOTH;
-    int header_format = NONE;
-    string outputfile;
-    string cmd;
-
     switch(menu) {
         default:
-            cout << "Error: " << menu << " is not a valid option" << endl;
+        {
+            cout << "Error: " << menu << " is not a valid option." << endl;
             break;
+        }
+
+        case EXIT:
+        {
+            break;
+        }
+
+        case UPDATEDB:
+        {
+            system(UPDATE_DATABASE);
+            cout << "Database is up-to-date." << endl;
+            break;
+        }
 
         case DASHBOARD:
-            cout << endl << ":: Dashboards criteria:" << endl
+        {
+            int ranking_criteria = BOTH;
+            int header_format = NONE;
+
+            string outputfile, cmd;
+
+            cout << endl << "> Dashboards criteria:" << endl
                 << "   (" << CASES << ") CASES" << endl
                 << "   (" << DEATHS << ") DEATHS" << endl
                 << "   (" << BOTH << ") BOTH" << endl;
@@ -297,7 +322,7 @@ main(void)
             cout << endl << "Criteria (default = " << BOTH << "): ";
             cin >> ranking_criteria;
 
-            cout << endl << ":: Formatting available:" << endl
+            cout << endl << "> Formatting available:" << endl
                 << "   (" << NONE << ") " << CSV_HEADER << endl
                 << "   (" << FILTERED << ") " << CSV_HEADER_FILTERED << endl;
 
@@ -305,53 +330,59 @@ main(void)
             cin >> header_format;
             cout << endl;
 
-            retrievecountrylist(COVID_DATA, data);
+            tempdata = retrieveCountryList(COVID_DATA, data);
             switch(ranking_criteria) {
                 default:
                 case DEATHS:
+                    ranked = dataRank(tempdata, DEATHS);
                     outputfile = DASHBOARDS_LOCATION_PREFIX;
                     outputfile += COVID_DEATHS;
-                    ranked = datarank(data, DEATHS);
-                    datastore(ranked, outputfile, header_format);
+                    dataStore(ranked, outputfile, header_format);
                     if(ranking_criteria == DEATHS)
                         break;
 
                 case CASES:
+                    ranked = dataRank(tempdata, CASES);
                     outputfile = DASHBOARDS_LOCATION_PREFIX;
                     outputfile += COVID_CASES;
-                    ranked = datarank(data, CASES);
-                    datastore(ranked, outputfile, header_format);
+                    dataStore(ranked, outputfile, header_format);
                     break;
             }
+
             break;
+        }
 
 #if R_INSTALLED_
         case COUNTRYGRAPH:
-            cmd = GRAPH_DASHBOARD;
+        {
+            string cmd = GRAPH_DASHBOARD;
             cmd += " ";
             cmd += ROUT_DIR;
             cmd += " ";
             cmd += + COUNTRY_DATA;
             system(cmd.c_str());
             break;
+        }
 #endif
 
         case COUNTRYINFO:
+        {
+            string outputfile, cmd;
             string country;
-            country.clear();
 
             cout << endl << "From which country do you want to retrieve information?";
             cout << endl << "Answer: ";
-            cin.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
+            //cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n' );
+            cin.ignore();
             getline(cin, country);
 
-            if(retrievecountry(COVID_DATA, data, country) == -1) {
+            if(retrieveCountry(COVID_DATA, data, country, tempdata) == -1) {
                 cout << "Error: country not found." << endl
                      << "Warning: Country search is case sensitive." << endl;
                 break;
             }
 
-            country = ReplaceAll(country, " ", "_");
+            country = replaceAll(country, " ", "_");
 
             cmd = CREATE_DIR;
             cmd += " ";
@@ -359,8 +390,13 @@ main(void)
             system(cmd.c_str());
 
             outputfile = DASHBOARDS_LOCATION_PREFIX + country + "/" + COUNTRY_DATA;
-            datastore(data, outputfile, NONE);
+            dataStore(tempdata, outputfile, NONE);
             break;
+        }
+    }
+
+    if(menu != EXIT) {
+        goto MENU;
     }
 
     return 0;

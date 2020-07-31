@@ -83,6 +83,6 @@ enum CSV_HEADER_FORMAT {
 };
 
 struct coviddata
-coviddataformat(vector<string> content);
+covidDataFormat(vector<string> content);
 
 #endif
