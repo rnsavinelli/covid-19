@@ -8,7 +8,7 @@ The goal of this project is to build an understanding of the virus behaviour and
 
 **Important:** 
 - To graph data, the [R](https://en.wikipedia.org/wiki/R_(programming_language)) software environment for statistical computing and graphics must be present on your system. Information on how to download and install the latest binaries can be found [here](https://cran.r-project.org/).
-- To download the latest available WHO published database `wget` is a requirement.
+- To download the latest available WHO published database, `wget` is a requirement.
 
 ## Get the latest information on SARS-CoV-2
 - https://www.cdc.gov/coronavirus/2019-ncov/
