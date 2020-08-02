@@ -1,4 +1,4 @@
-# USAGE: graph.R CSV_DASHBOARD
+# USAGE: graph.R CSV_DASHBOARD OUT_DIR
 args = (commandArgs(TRUE))
 out = args[2]
 
