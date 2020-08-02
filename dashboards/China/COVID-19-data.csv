@@ -1,5 +1,7 @@
 Date_reported, Country_code, Country, WHO_region, New_cases, Cumulative_cases, New_deaths, Cumulative_deaths
-2020-01-06,CN,China,WPRO,4,4,0,0
+2020-01-04,CN,China,WPRO,1,1,0,0
+2020-01-05,CN,China,WPRO,0,1,0,0
+2020-01-06,CN,China,WPRO,3,4,0,0
 2020-01-07,CN,China,WPRO,0,4,0,0
 2020-01-08,CN,China,WPRO,0,4,0,0
 2020-01-09,CN,China,WPRO,0,4,0,0
@@ -207,3 +209,5 @@ Date_reported, Country_code, Country, WHO_region, New_cases, Cumulative_cases, N
 2020-07-29,CN,China,WPRO,212,87457,1,4664
 2020-07-30,CN,China,WPRO,223,87680,1,4665
 2020-07-31,CN,China,WPRO,276,87956,1,4666
+2020-08-01,CN,China,WPRO,166,88122,2,4668
+2020-08-02,CN,China,WPRO,180,88302,6,4674
