@@ -274,7 +274,7 @@ main(void)
     }
 #endif
 
-    while(menu != EXIT) {
+    MAIN_MENU:
         cout << endl << ":: Menu:" << endl
              << "   (" << UPDATEDB << ") Retrieve the latest global database" << endl
              << "   (" << DASHBOARD << ") Create global dashboard" << endl
@@ -381,7 +381,8 @@ main(void)
                 break;
             }
         }
-    }
+
+    if (menu != EXIT) goto MAIN_MENU;
 
     return 0;
 }
