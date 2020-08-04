@@ -260,7 +260,7 @@ main(void)
     vector<struct coviddata> ranked;
     int menu = MENU_ITEMS_N;
 
-    cout << "covid-tool v1.1.2 Global COVID-19 Dashboard and Graph Generator." << endl
+    cout << "covid-tool v1.1.3 Global COVID-19 Dashboard and Graph Generator." << endl
          << "Copyright (c) 2020 R. Nicolás Savinelli <rsavinelli@est.frba.utn.edu.ar>"
          << endl;
 
@@ -302,7 +302,7 @@ main(void)
 
             case DASHBOARD: {
                 int rankingcriteria, headerformat;
-                string outputfile;
+                string answer, outputfile;
 
                 cout << endl << "> Dashboards criteria:" << endl
                      << "   (" << CASES << ") CASES" << endl
@@ -310,16 +310,31 @@ main(void)
                      << "   (" << BOTH << ") BOTH" << endl;
 
                 cout << endl << "Criteria (default = " << BOTH << "): ";
-                cin >> rankingcriteria;
+
+                cin.ignore();
+                getline(cin, answer);
+                if(!answer.empty()) {
+                    istringstream stream(answer);
+                    stream >> rankingcriteria;
+                } else {
+                    rankingcriteria = BOTH;
+                }
 
                 cout << endl << "> Formatting available:" << endl
                      << "   (" << NONE << ") " << CSV_HEADER << endl
                      << "   (" << FILTERED << ") " << CSV_HEADER_FILTERED << endl;
 
                 cout << endl << "Format (default = " << NONE << "): ";
-                cin >> headerformat;
-                cout << endl;
 
+                getline(cin, answer);
+                if(!answer.empty()) {
+                    istringstream stream(answer);
+                    stream >> headerformat;
+                } else {
+                    headerformat = NONE;
+                }
+
+                cout << endl;
                 tempdata = retrieveCountryList(COVID_DATA, data);
                 switch(rankingcriteria) {
                     default:
