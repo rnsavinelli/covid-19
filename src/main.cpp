@@ -90,19 +90,20 @@ replaceAll(string str, const string& from, const string& to)
 }
 /* ************************************************************************ */
 
-vector<struct coviddata>
-retrieveCountryList(string file_name, vector<struct coviddata> data)
+int
+retrieveCountryList(string file_name, vector<struct coviddata> &data)
 {
     ifstream file;
     string line;
+
+    data.clear();
 
     file.open(file_name);
 
     cout << "Opening \"" << file_name << "\"" << "... ";
     if(!file.is_open()) {
         perror("file.open()");
-        data.clear();
-        return data;
+        return ERROR;
     }
     cout << "done." << endl;
 
@@ -131,14 +132,16 @@ retrieveCountryList(string file_name, vector<struct coviddata> data)
 
     file.close();
 
-    return data;
+    return 0;
 }
 
 int
-retrieveCountry(string file_name, vector<struct coviddata> data, string country, vector<struct coviddata> &countrydata)
+retrieveCountry(string file_name, string country, vector<struct coviddata> &countrydata)
 {
     ifstream file;
     string line;
+
+    countrydata.clear();
 
     file.open(file_name);
 
@@ -160,21 +163,20 @@ retrieveCountry(string file_name, vector<struct coviddata> data, string country,
         rawdata = CSVlineparser(line);
         struct coviddata newdata = covidDataFormat(rawdata);
 
-        if((newdata.country.name == prevdata.country.name && newdata.country.name == country)
-            || prevdata.country.name == country) {
-            data.push_back(prevdata);
+        if((newdata.country.name == prevdata.country.name && newdata.country.name == country) ||
+            prevdata.country.name == country) {
+            countrydata.push_back(prevdata);
         }
 
         prevdata = newdata;
     }
 
-    if(data.size() == 0) {
+    if(countrydata.size() == 0) {
         return ERROR;
     }
 
     file.close();
     cout << "done." << endl;
-    countrydata = data;
 
     return 0;
 }
@@ -256,8 +258,9 @@ dataStore(const vector<struct coviddata> data, string dest, unsigned int header_
 int
 main(void)
 {
-    vector<struct coviddata> data, tempdata;
+    vector<struct coviddata> data;
     vector<struct coviddata> ranked;
+    vector<string> cache;
     int menu = MENU_ITEMS_N;
 
     cout << "covid-tool v1.1.3 Global COVID-19 Dashboard and Graph Generator." << endl
@@ -266,7 +269,7 @@ main(void)
 
 #if ALWAYS_PROMPT_TO_UPDATE_THE_DATABASE_
     char answer;
-    cout << endl << "Do you want to retrieve the latest global database? [Y/n]: ";
+    cout << endl << "Do you want to fetch the latest global database? [Y/n]: ";
     cin  >> answer;
     if (answer == 'y' || answer == 'Y') {
         system(UPDATE_DATABASE);
@@ -276,7 +279,7 @@ main(void)
 
     while(menu != EXIT) {
         cout << endl << ":: Menu:" << endl
-             << "   (" << UPDATEDB << ") Retrieve the latest global database" << endl
+             << "   (" << UPDATEDB << ") Fetch the latest global database" << endl
              << "   (" << DASHBOARD << ") Create global dashboard" << endl
              << "   (" << COUNTRYINFO << ") Retrieve country information" << endl
 #if R_INSTALLED_
@@ -335,11 +338,15 @@ main(void)
                 }
 
                 cout << endl;
-                tempdata = retrieveCountryList(COVID_DATA, data);
+                if(retrieveCountryList(COVID_DATA, data) == ERROR) {
+                    cout << "Error: failed to retrieve country list." << endl;
+                    break;
+                };
+
                 switch(rankingcriteria) {
                     default:
                     case DEATHS:
-                        ranked = dataRank(tempdata, DEATHS);
+                        ranked = dataRank(data, DEATHS);
                         outputfile = DASHBOARDS_LOCATION_PREFIX;
                         outputfile += COVID_DEATHS;
                         dataStore(ranked, outputfile, headerformat);
@@ -347,7 +354,7 @@ main(void)
                            break;
 
                     case CASES:
-                        ranked = dataRank(tempdata, CASES);
+                        ranked = dataRank(data, CASES);
                         outputfile = DASHBOARDS_LOCATION_PREFIX;
                         outputfile += COVID_CASES;
                         dataStore(ranked, outputfile, headerformat);
@@ -378,7 +385,7 @@ main(void)
                 cin.ignore();
                 getline(cin, country);
 
-                if(retrieveCountry(COVID_DATA, data, country, tempdata) == -1) {
+                if(retrieveCountry(COVID_DATA, country, data) == ERROR) {
                     cout << "Error: country not found." << endl
                          << "Warning: Country search is case sensitive." << endl;
                     break;
@@ -392,7 +399,7 @@ main(void)
                 system(cmd.c_str());
 
                 outputfile = DASHBOARDS_LOCATION_PREFIX + country + "/" + COUNTRY_DATA;
-                dataStore(tempdata, outputfile, NONE);
+                dataStore(data, outputfile, NONE);
                 break;
             }
         }
