@@ -25,11 +25,15 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
+#include <fstream>
 
 #define CSV_HEADER "Date_reported, Country_code, Country, WHO_region, New_cases, Cumulative_cases, New_deaths, Cumulative_deaths"
-#define CSV_HEADER_FILTERED "Country, New_cases, Cumulative_cases, New_deaths, Cumulative_deaths"
+#define CSV_HEADER_FILTERED "Country, Cumulative_cases, Cumulative_deaths"
 
 #define COVID_DATA "database/WHO-COVID-19-global-data.csv"
+
+#define ERROR -1
 
 using namespace std;
 
@@ -82,5 +86,8 @@ enum CSV_HEADER_FORMAT {
 
 struct coviddata
 covidDataFormat(vector<string> content);
+
+int
+covidDataStore(const vector<struct coviddata> data, string dest, unsigned int header_format);
 
 #endif

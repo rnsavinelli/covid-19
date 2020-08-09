@@ -215,47 +215,6 @@ dataRank(vector<struct coviddata> data, unsigned int criteria)
 }
 
 int
-dataStore(const vector<struct coviddata> data, string dest, unsigned int header_format)
-{
-    cout << "Saving file to " << dest << "... ";
-    ofstream file;
-
-    file.open(dest, ios::trunc);
-    if (!file.is_open()) {
-        return ERROR;
-    }
-
-    switch(header_format) {
-        default:
-        case NONE:
-            file << CSV_HEADER << endl;
-            for(struct coviddata element : data) {
-            file << element.date << "," << element.country.code << ","
-                << element.country.name << "," << element.country.region << ","
-                << element.cases.newdata << "," << element.cases.cumulativedata << ","
-                << element.deaths.newdata << "," << element.deaths.cumulativedata
-                << endl;
-            }
-            break;
-
-        case FILTERED:
-             file << CSV_HEADER_FILTERED << endl;
-            for(struct coviddata element : data) {
-                file << element.country.name << "," << element.cases.newdata << ","
-                    << element.cases.cumulativedata << "," << element.deaths.newdata << ","
-                    << element.deaths.cumulativedata
-                    << endl;
-            }
-            break;
-    }
-
-    file.close();
-    cout << "saved." << endl;
-
-    return 0;
-}
-
-int
 main(void)
 {
     vector<struct coviddata> data;
@@ -349,7 +308,7 @@ main(void)
                         ranked = dataRank(data, DEATHS);
                         outputfile = DASHBOARDS_LOCATION_PREFIX;
                         outputfile += COVID_DEATHS;
-                        dataStore(ranked, outputfile, headerformat);
+                        covidDataStore(ranked, outputfile, headerformat);
                         if(rankingcriteria == DEATHS)
                            break;
 
@@ -357,7 +316,7 @@ main(void)
                         ranked = dataRank(data, CASES);
                         outputfile = DASHBOARDS_LOCATION_PREFIX;
                         outputfile += COVID_CASES;
-                        dataStore(ranked, outputfile, headerformat);
+                        covidDataStore(ranked, outputfile, headerformat);
                         break;
                 }
                 break;
@@ -399,7 +358,7 @@ main(void)
                 system(cmd.c_str());
 
                 outputfile = DASHBOARDS_LOCATION_PREFIX + country + "/" + COUNTRY_DATA;
-                dataStore(data, outputfile, NONE);
+                covidDataStore(data, outputfile, NONE);
                 break;
             }
         }

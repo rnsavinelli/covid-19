@@ -20,7 +20,7 @@
  *
  */
 
-#include <iostream>
+#include <fstream>
 #include <string>
 
 #include "coviddata.hpp"
@@ -43,4 +43,45 @@ covidDataFormat(vector<string> content)
     newdata.deaths.cumulativedata = atoi(content[CUMULATIVE_DEATHS].c_str());
 
     return newdata;
+}
+
+int
+covidDataStore(const vector<struct coviddata> data, string dest, unsigned int header_format)
+{
+    cout << "Saving file to " << dest << "... ";
+    ofstream file;
+
+    file.open(dest, ios::trunc);
+    if (!file.is_open()) {
+        return ERROR;
+    }
+
+    switch(header_format) {
+        default:
+        case NONE:
+            file << CSV_HEADER << endl;
+            for(struct coviddata element : data) {
+            file << element.date << "," << element.country.code << ","
+                << element.country.name << "," << element.country.region << ","
+                << element.cases.newdata << "," << element.cases.cumulativedata << ","
+                << element.deaths.newdata << "," << element.deaths.cumulativedata
+                << endl;
+            }
+            break;
+
+        case FILTERED:
+             file << CSV_HEADER_FILTERED << endl;
+            for(struct coviddata element : data) {
+                file << element.country.name << ","
+                    << element.cases.cumulativedata << ","
+                    << element.deaths.cumulativedata
+                    << endl;
+            }
+            break;
+    }
+
+    file.close();
+    cout << "saved." << endl;
+
+    return 0;
 }
