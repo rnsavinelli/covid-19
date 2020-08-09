@@ -192,3 +192,5 @@ Date_reported, Country_code, Country, WHO_region, New_cases, Cumulative_cases, N
 2020-08-05,DE,Germany,EURO,741,212022,12,9168
 2020-08-06,DE,Germany,EURO,1045,213067,7,9175
 2020-08-07,DE,Germany,EURO,1147,214214,8,9183
+2020-08-08,DE,Germany,EURO,1122,215336,12,9195
+2020-08-09,DE,Germany,EURO,555,215891,1,9196
