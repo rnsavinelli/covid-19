@@ -193,3 +193,8 @@ Date_reported, Country_code, Country, WHO_region, New_cases, Cumulative_cases, N
 2020-08-10,GB,The United Kingdom,EURO,1062,310829,8,46574
 2020-08-11,GB,The United Kingdom,EURO,816,311645,-48,46526
 2020-08-12,GB,The United Kingdom,EURO,1148,312793,0,46526
+2020-08-13,GB,The United Kingdom,EURO,1009,313802,180,46706
+2020-08-14,GB,The United Kingdom,EURO,1129,314931,-5359,41347
+2020-08-15,GB,The United Kingdom,EURO,1440,316371,10,41357
+2020-08-16,GB,The United Kingdom,EURO,1073,317444,4,41361
+2020-08-17,GB,The United Kingdom,EURO,1044,318488,5,41366
