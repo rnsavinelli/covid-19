@@ -216,3 +216,7 @@ Date_reported, Country_code, Country, WHO_region, New_cases, Cumulative_cases, N
 2020-08-21,US,United States of America,AMRO,46259,5477305,1393,172033
 2020-08-22,US,United States of America,AMRO,43952,5521257,1065,173098
 2020-08-23,US,United States of America,AMRO,45960,5567217,1148,174246
+2020-08-24,US,United States of America,AMRO,44946,5612163,997,175243
+2020-08-25,US,United States of America,AMRO,37765,5649928,570,175813
+2020-08-26,US,United States of America,AMRO,32883,5682811,388,176201
+2020-08-27,US,United States of America,AMRO,37030,5719841,1131,177332
