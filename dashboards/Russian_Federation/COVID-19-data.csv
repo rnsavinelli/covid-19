@@ -205,3 +205,6 @@ Date_reported, Country_code, Country, WHO_region, New_cases, Cumulative_cases, N
 2020-08-21,RU,Russian Federation,EURO,4870,946976,90,16189
 2020-08-22,RU,Russian Federation,EURO,4921,951897,121,16310
 2020-08-23,RU,Russian Federation,EURO,4852,956749,73,16383
+2020-08-24,RU,Russian Federation,EURO,4744,961493,65,16448
+2020-08-25,RU,Russian Federation,EURO,4696,966189,120,16568
+2020-08-26,RU,Russian Federation,EURO,4676,970865,115,16683
