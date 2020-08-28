@@ -80,8 +80,8 @@ enum RANKING_CRITERIA {
 };
 
 enum CSV_HEADER_FORMAT {
-    NONE,
-    FILTERED
+    FILTERED,
+    NONE
 };
 
 struct coviddata

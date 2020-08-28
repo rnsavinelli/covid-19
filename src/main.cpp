@@ -222,7 +222,7 @@ main(void)
     vector<string> cache;
     int menu = MENU_ITEMS_N;
 
-    cout << "covid-tool v1.1.3 Global COVID-19 Dashboard and Graph Generator." << endl
+    cout << "covid-tool v1.1.4 Global COVID-19 Dashboard and Graph Generator." << endl
          << "Copyright (c) 2020 R. Nicolás Savinelli <rsavinelli@est.frba.utn.edu.ar>"
          << endl;
 
@@ -283,17 +283,17 @@ main(void)
                 }
 
                 cout << endl << "> Formatting available:" << endl
-                     << "   (" << NONE << ") " << CSV_HEADER << endl
-                     << "   (" << FILTERED << ") " << CSV_HEADER_FILTERED << endl;
+                     << "   (" << FILTERED << ") " << CSV_HEADER_FILTERED << endl
+                     << "   (" << NONE << ") " << CSV_HEADER << endl;
 
-                cout << endl << "Format (default = " << NONE << "): ";
+                cout << endl << "Format (default = " << FILTERED << "): ";
 
                 getline(cin, answer);
                 if(!answer.empty()) {
                     istringstream stream(answer);
                     stream >> headerformat;
                 } else {
-                    headerformat = NONE;
+                    headerformat = FILTERED;
                 }
 
                 cout << endl;
