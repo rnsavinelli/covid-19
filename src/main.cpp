@@ -222,7 +222,7 @@ main(void)
     vector<string> cache;
     int menu = MENU_ITEMS_N;
 
-    cout << "covid-tool v1.1.4 Global COVID-19 Dashboard and Graph Generator." << endl
+    cout << "covid-tool v1.1.3 Global COVID-19 Dashboard and Graph Generator." << endl
          << "Copyright (c) 2020 R. Nicolás Savinelli <rsavinelli@est.frba.utn.edu.ar>"
          << endl;
 
