@@ -19,7 +19,7 @@ The goal of this project is to build an understanding of the virus behaviour and
 
 [`graph.sh`](graph.sh) and [`updatedatabase.sh`](updatedatabase.sh) are invoked within covid-tool, but were created such that the user can run them as separate tools.
 
-[`graph.R`](graph.R) is wrapped and executed by [`graph.sh`](graph.sh). **Running [`graph.R`](graph.R) on its own is discouraged unless you read its source code**.
+[`graph.R`](graph.R) is wrapped and executed by [`graph.sh`](graph.sh). **Running [`graph.R`](graph.R) on its own is discouraged**.
 
 ## About the database
 DISCLAIMER: The consulted database is not of my authorship.
