@@ -72,6 +72,13 @@ CSVlineparser(string line)
     stringstream str_strm(line.c_str());
 
     while(getline(str_strm, tmp, ',')) {
+        /* commas inside quotes handler */
+        size_t found = tmp.find('"');
+        if (found != string::npos) {
+            string quoted;
+            getline(str_strm, quoted, '"');
+            tmp += "," + quoted + "\"";
+        }
         vec.push_back(tmp);
     }
 
