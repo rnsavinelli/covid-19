@@ -61,8 +61,8 @@ Date_reported, Country_code, Country, WHO_region, New_cases, Cumulative_cases, N
 2020-03-02,US,United States of America,AMRO,2,68,0,0
 2020-03-03,US,United States of America,AMRO,44,112,2,2
 2020-03-04,US,United States of America,AMRO,21,133,3,5
-2020-03-05,US,United States of America,AMRO,19,152,5,10
-2020-03-06,US,United States of America,AMRO,65,217,1,11
+2020-03-05,US,United States of America,AMRO,0,133,4,9
+2020-03-06,US,United States of America,AMRO,84,217,2,11
 2020-03-07,US,United States of America,AMRO,0,217,0,11
 2020-03-08,US,United States of America,AMRO,0,217,0,11
 2020-03-09,US,United States of America,AMRO,259,476,8,19
@@ -270,3 +270,10 @@ Date_reported, Country_code, Country, WHO_region, New_cases, Cumulative_cases, N
 2020-09-27,US,United States of America,AMRO,50070,6960152,844,202478
 2020-09-28,US,United States of America,AMRO,48958,7009110,851,203329
 2020-09-29,US,United States of America,AMRO,35217,7044327,291,203620
+2020-09-30,US,United States of America,AMRO,32688,7077015,255,203875
+2020-10-01,US,United States of America,AMRO,38476,7115491,767,204642
+2020-10-02,US,United States of America,AMRO,44985,7160476,1024,205666
+2020-10-03,US,United States of America,AMRO,46293,7206769,892,206558
+2020-10-04,US,United States of America,AMRO,49465,7256234,808,207366
+2020-10-05,US,United States of America,AMRO,49036,7305270,698,208064
+2020-10-06,US,United States of America,AMRO,36136,7341406,369,208433
