@@ -41,7 +41,7 @@
 #define CREATE_DIR "mkdir -p "
 
 /* R CONFIGURATION */
-#define R_INSTALLED_ 1
+// #define R_INSTALLED_ 1
 
 #if R_INSTALLED_
     #define ROUT_DIR "rout"
